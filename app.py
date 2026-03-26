@@ -19,9 +19,9 @@ from openpyxl.utils import get_column_letter
 # Streamlit app using yfinance
 # ============================================================
 
-st.set_page_config(page_title="top down fun backtest", layout="wide")
-st.title("top down fun backtest")
-st.caption("Interactive portfolio vs benchmark backtest using yfinance")
+st.set_page_config(page_title="top down fund backtest", layout="wide")
+st.title("top down fund backtest")
+st.caption("syed's little creation, benchmarking the portfolio")
 
 
 # -------------------------
