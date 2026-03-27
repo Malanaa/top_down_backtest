@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FuncFormatter
 import numpy as np
 import pandas as pd
+from pandas_datareader import data as pdr
 import streamlit as st
 import yfinance as yf
 from openpyxl.utils import get_column_letter
@@ -294,7 +295,9 @@ def performance_stats(growth: pd.Series, returns: pd.Series) -> pd.Series:
     total_return = growth.iloc[-1] / growth.iloc[0] - 1
     cagr = annualized_return_from_growth(growth)
     ann_vol = returns.std() * np.sqrt(252)
-    sharpe = (returns.mean() * 252) / ann_vol if ann_vol and ann_vol > 0 else np.nan
+    rf = pdr.DataReader("DGS10", "fred", start="2000-01-01")["DGS10"] / 100.0
+    rf_current = rf.dropna().iloc[-1]
+    sharpe = ((returns.mean() * 252) - rf_current) / ann_vol if ann_vol and ann_vol > 0 else np.nan
     drawdown = compute_drawdown(growth)
     max_drawdown = drawdown.min()
     calmar = cagr / abs(max_drawdown) if pd.notna(cagr) and max_drawdown < 0 else np.nan
@@ -305,7 +308,7 @@ def performance_stats(growth: pd.Series, returns: pd.Series) -> pd.Series:
             "Total Return": total_return,
             "CAGR": cagr,
             "Annualized Volatility": ann_vol,
-            "Sharpe Ratio (rf=0)": sharpe,
+            "Sharpe Ratio": sharpe,
             "Max Drawdown": max_drawdown,
             "Calmar Ratio": calmar,
         }
