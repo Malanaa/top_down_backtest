@@ -296,8 +296,7 @@ def performance_stats(growth: pd.Series, returns: pd.Series) -> pd.Series:
     cagr = annualized_return_from_growth(growth)
     ann_vol = returns.std() * np.sqrt(252)
     rf = pdr.DataReader("DGS10", "fred", start="2000-01-01")["DGS10"] / 100.0
-    rf_current = rf.dropna().iloc[-1]
-    sharpe = ((returns.mean() * 252) - rf_current) / ann_vol if ann_vol and ann_vol > 0 else np.nan
+    sharpe = ((returns.mean() * 252) - rf.mean()) / ann_vol if ann_vol and ann_vol > 0 else np.nan
     drawdown = compute_drawdown(growth)
     max_drawdown = drawdown.min()
     calmar = cagr / abs(max_drawdown) if pd.notna(cagr) and max_drawdown < 0 else np.nan
